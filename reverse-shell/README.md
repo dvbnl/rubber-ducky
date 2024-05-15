@@ -30,7 +30,7 @@ Within your linux box navigate to the shell.exe location. I'm using a Python web
 
 Next, change the variables in the script:
 
-- LINE 23 - 28 === VARIABLES
+- LINE 25 === VARIABLES
   Changing the paths is optional. I'm using C:\temp to create the folder and exclude it withint MS Defender. If you want a different path or executable name you can change them
-- LINE 39 === URL
+- LINE 36 === URL
   This one is important because the target computers needs to download your crafted executable. Fill in the URL of your HTTP server and specify the folder/filename
